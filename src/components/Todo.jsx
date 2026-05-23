@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AddTaskForm from './AddTaskForm'
 import SearchTaskForm from './SearchTaskForm'
 import TodoInfo from './TodoInfo'
@@ -6,12 +6,20 @@ import TodoList from './TodoList'
 
 
 const Todo = () => {
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem('tasks')
+    if (savedTasks) {
+      return JSON.parse(savedTasks);
+    }
+    return [
+      { id: 'task-1', title: "купити молоко ", isDone: false },
+      { id: 'task-2', title: "погладити котика ", isDone: true },
+    ]
+  })
 
-  const [tasks, setTasks] = useState([
-    { id: 'task-1', title: "купити молоко ", isDone: false },
-    { id: 'task-2', title: "погладити котика ", isDone: true },
-  ]);
   const [newTasksTitle, setNewTasksTitle] = useState("");
+
+  const [searchQuery, setSearchQuery] = useState("")
 
   const deleteAllTasks = () => {
     const isCofirmed = confirm('Are you sure you want delete all?')
@@ -25,16 +33,12 @@ const Todo = () => {
   }
 
   const toggleTaskComplete = (taskId, isDone) => {
-   setTasks(tasks.map(task => {
-     if (task.id === taskId) {
-      return { ...task, isDone };
-    }
-    return task;
-  }))
-}
-
-  const filterTask = (query) => {
-    console.log(`Поиск: ${query}`)
+    setTasks(tasks.map(task => {
+      if (task.id === taskId) {
+        return { ...task, isDone };
+      }
+      return task;
+    }))
   }
 
   const addTask = () => {
@@ -45,11 +49,19 @@ const Todo = () => {
         isDone: false
       }
       setTasks([...tasks, newTask])
-       console.log("Очищаем input, было:", newTasksTitle)
       setNewTasksTitle('')
-      console.log("После setNewTasksTitle") 
+      setSearchQuery('')
     }
   }
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks))
+  }, [tasks])
+
+  const clearSearchQuery = searchQuery.trim().toLowerCase()
+
+  const filtredTasks = clearSearchQuery.length > 0 ?
+    tasks.filter(({ title }) => title.toLowerCase().includes(clearSearchQuery)) : null
 
   return (
     <div className="todo">
@@ -57,9 +69,11 @@ const Todo = () => {
       < AddTaskForm
         addTask={addTask}
         newTasksTitle={newTasksTitle}
-        setNewTasksTitle={setNewTasksTitle} 
+        setNewTasksTitle={setNewTasksTitle}
       />
-      <SearchTaskForm onSearchInput={filterTask} />
+      <SearchTaskForm
+        searchQuery={searchQuery} setSearchQuery={setSearchQuery}
+      />
       <TodoInfo
         total={tasks.length}
         done={tasks.filter(({ isDone }) => isDone).length}
@@ -67,8 +81,10 @@ const Todo = () => {
       />
       <TodoList
         tasks={tasks}
+        filtredTasks={filtredTasks}
         onDeleteTaskButtonClick={deleteTask}
-        onTaskCompleteChange={toggleTaskComplete} />
+        onTaskCompleteChange={toggleTaskComplete}
+      />
     </div>
   )
 }
