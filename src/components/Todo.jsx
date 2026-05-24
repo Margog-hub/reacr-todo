@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import AddTaskForm from './AddTaskForm'
 import SearchTaskForm from './SearchTaskForm'
 import TodoInfo from './TodoInfo'
 import TodoList from './TodoList'
+import Button from './Button'
 
 
 const Todo = () => {
@@ -16,10 +17,11 @@ const Todo = () => {
       { id: 'task-2', title: "погладити котика ", isDone: true },
     ]
   })
-
   const [newTasksTitle, setNewTasksTitle] = useState("");
-
   const [searchQuery, setSearchQuery] = useState("")
+  const newTaskInputRef = useRef(null)
+  const firstIncompleteTaskRef = useRef(null)
+  const firstIncompleteTaskId = tasks.find(({ isDone }) => !isDone)?.id
 
   const deleteAllTasks = () => {
     const isCofirmed = confirm('Are you sure you want delete all?')
@@ -51,12 +53,17 @@ const Todo = () => {
       setTasks([...tasks, newTask])
       setNewTasksTitle('')
       setSearchQuery('')
+      newTaskInputRef.current.focus()
     }
   }
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks))
   }, [tasks])
+
+  useEffect(() => {
+    newTaskInputRef.current.focus()
+  }, [])
 
   const clearSearchQuery = searchQuery.trim().toLowerCase()
 
@@ -70,6 +77,7 @@ const Todo = () => {
         addTask={addTask}
         newTasksTitle={newTasksTitle}
         setNewTasksTitle={setNewTasksTitle}
+        newTaskInputRef={newTaskInputRef}
       />
       <SearchTaskForm
         searchQuery={searchQuery} setSearchQuery={setSearchQuery}
@@ -79,9 +87,14 @@ const Todo = () => {
         done={tasks.filter(({ isDone }) => isDone).length}
         onDeleteAllButtonClick={deleteAllTasks}
       />
+      <Button onClick={() => { firstIncompleteTaskRef.current?.scrollIntoView({ behavior: 'smooth' }) }}>
+        Show first incomplete task
+      </Button>
       <TodoList
         tasks={tasks}
         filtredTasks={filtredTasks}
+        firstIncompleteTaskRef={firstIncompleteTaskRef}
+        firstIncompleteTaskId={firstIncompleteTaskId}
         onDeleteTaskButtonClick={deleteTask}
         onTaskCompleteChange={toggleTaskComplete}
       />

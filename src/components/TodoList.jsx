@@ -1,7 +1,7 @@
 import TodoItem from './TodoItem';
 
 const TodoList = (props) => {
-  const { tasks = [], onDeleteTaskButtonClick, onTaskCompleteChange, filtredTasks } = props
+  const { tasks = [], onDeleteTaskButtonClick, onTaskCompleteChange, filtredTasks, firstIncompleteTaskRef, firstIncompleteTaskId } = props
   const hasTask = tasks.length > 0
   const isEmptyFiltredTasks = filtredTasks?.length === 0
 
@@ -17,7 +17,9 @@ const TodoList = (props) => {
     <ul className="todo__list">
       {(filtredTasks ?? tasks).map((task) => (
         <TodoItem
-          key={task.id} {...task}
+          key={task.id}
+          {...task}
+          ref={task.id === firstIncompleteTaskId ? firstIncompleteTaskRef : null}
           onDeleteTaskButtonClick={onDeleteTaskButtonClick}
           onTaskCompleteChange={onTaskCompleteChange}
         />))}
