@@ -38,19 +38,17 @@ const useTasks = () => {
     }, [tasks]
   )
 
-  const addTask = useCallback(() => {
-    if (newTasksTitle.trim().length > 0) {
-      const newTask = {
-        id: crypto?.randomUUID() ?? Date.now().toString(),
-        title: newTasksTitle,
-        isDone: false
-      }
-      setTasks((prevTasks) => [...prevTasks, newTask])
-      setNewTasksTitle('')
-      setSearchQuery('')
-      newTaskInputRef.current.focus()
+  const addTask = useCallback((title) => {
+    const newTask = {
+      id: crypto?.randomUUID() ?? Date.now().toString(),
+      title,
+      isDone: false
     }
-  }, [newTasksTitle]
+    setTasks((prevTasks) => [...prevTasks, newTask])
+    setNewTasksTitle('')
+    setSearchQuery('')
+    newTaskInputRef.current.focus()
+  }, []
   )
 
   useEffect(() => {
