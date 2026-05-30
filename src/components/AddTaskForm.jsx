@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import Button from "./Button"
 import Field from "./Field"
 import { TasksContext } from "../context/TasksContext"
@@ -6,10 +6,24 @@ import { TasksContext } from "../context/TasksContext"
 
 const AddTaskForm = () => {
   const { addTask, newTasksTitle, setNewTasksTitle, newTaskInputRef } = useContext(TasksContext)
+  const [error, setError] = useState('')
+
+  const clearNewTaskTitle = newTasksTitle.trim()
+  const isNewTaskTitleEmply = clearNewTaskTitle.length === 0
 
   const onSubmit = (e) => {
     e.preventDefault()
-    addTask()
+    if (!isNewTaskTitleEmply) {
+      addTask(clearNewTaskTitle)
+    }
+  }
+
+  const onInput = (e) => {
+    const { value } = e.target
+    const clearValue = value.trim()
+    const hasOnlySpaces = value.length > 0 && clearValue.length === 0
+    setNewTasksTitle(value)
+    setError(hasOnlySpaces ? 'The task cannot be emply' : '')
   }
 
   return (
@@ -18,11 +32,17 @@ const AddTaskForm = () => {
         className='todo__form'
         label='New Task title'
         id='new-task'
+        error={error}
         ref={newTaskInputRef}
         value={newTasksTitle}
-        onInput={(e) => setNewTasksTitle(e.target.value)}
+        onInput={onInput}
       />
-      <Button type='submit'>Add</Button>
+      <Button
+        type='submit'
+        isDisabled={isNewTaskTitleEmply}
+      >
+        Add
+      </Button>
     </form>
   )
 }
