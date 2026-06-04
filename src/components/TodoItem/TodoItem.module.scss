@@ -1,4 +1,4 @@
-.todoIitem {
+.todoItem {
   display: flex;
   align-items: center;
   column-gap: 12px;
@@ -23,6 +23,17 @@
       pointer-events: none;
     }
   }
+  &.isAppearing {
+    animation: appear calc(var(--transition-duration) * 2);
+    pointer-events: none;
+}
+
+     @keyframes appear {
+       from {
+        opacity: 0;
+        transform: translate(0, -75%);
+            }
+     }
 }
 
 .checkbox {
