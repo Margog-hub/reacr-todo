@@ -1,18 +1,19 @@
+import styles from './Field.module.scss'
 
 const Field = (props) => {
   const { className = '', id, label, type = 'text', onInput, value, ref, error } = props
   return (
-    <div className={`field ${className}`}>
+    <div className={`${styles.field} ${className}`}>
 
       <label
-        className="field__label"
+        className={`${styles.label}`}
         htmlFor={id}
       >
         {label}
       </label>
 
       <input
-        className={`field__input ${error ? 'is-invalid' : ''}`}
+        className={`${styles.input} ${error ? 'isInvalid' : ''}`}
         id={id}
         placeholder=" "
         autoComplete="off"
@@ -23,7 +24,7 @@ const Field = (props) => {
       />
       {error && (
         <span
-          className="field__error"
+          className={`${styles.error}`}
           title={error}
         >
           {error}
