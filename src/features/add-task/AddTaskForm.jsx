@@ -15,8 +15,7 @@ const AddTaskForm = (props) => {
   const onSubmit = (e) => {
     e.preventDefault()
     if (!isNewTaskTitleEmply) {
-      addTask(clearNewTaskTitle),
-     () => setNewTasksTitle('')
+      addTask(clearNewTaskTitle, () => setNewTasksTitle(''))
     }
   }
 
