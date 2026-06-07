@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/shared/constants"
 
 const RouterLink = (props) => {
   const { to, children, ...rest } = props
@@ -9,7 +8,7 @@ const RouterLink = (props) => {
   }
   return (
     <div>
-      <a href={`${BASE_URL}${to}`} onClick={handleClick} {...rest}>
+      <a href={to} onClick={handleClick} {...rest}>
         {children}
       </a>
     </div>

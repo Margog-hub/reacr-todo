@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react"
-import { BASE_URL } from "../constants"
 
-const getCurrentPath = () => {
-  const pathname = window.location.pathname
-
-  return pathname.startsWith(BASE_URL) ?
-    pathname.slice(BASE_URL.length - 1) || '/' :
-    pathname
-}
-
-export const matchPath = (path, route) => {
+ export const matchPath = (path, route) => {
   const pathParts = path.split('/')
   const routePaths = route.split('/')
   if (pathParts.length !== routePaths.length) {
@@ -29,10 +20,10 @@ export const matchPath = (path, route) => {
 }
 
 export const useRoute = () => {
-  const [path, setPath] = useState(getCurrentPath())
+  const [path, setPath] = useState(window.location.pathname)
   useEffect(() => {
     const onLocationChange = () => {
-      setPath(getCurrentPath())
+      setPath(window.location.pathname)
     }
     window.addEventListener('popstate', onLocationChange)
     return () => {
