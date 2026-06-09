@@ -85,9 +85,11 @@ const useTasks = () => {
   }, []
   )
 
-  useEffect((serverTasks) => {
+  useEffect(() => {
     newTaskInputRef.current.focus()
-    tasksAPI.getAll().then(dispatch({ type: 'SET_ALL', tasks: serverTasks }))
+    tasksAPI.getAll().then((serverTasks) => {
+      dispatch({ type: 'SET_ALL', tasks: serverTasks })
+    })
   }, []
   )
 
